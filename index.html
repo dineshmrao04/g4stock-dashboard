@@ -6,74 +6,118 @@
 <title>G4 Stock Dashboard</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-body{background:#0f172a;color:#e5e7eb;padding:8px;}
+body{
+background:#0f172a;
+color:#e5e7eb;
+padding:6px;
+}
 
+/* HEADER */
 header{
-display:flex;justify-content:space-between;align-items:center;
-background:#111827;color:#fff;padding:14px;
-font-size:18px;font-weight:bold;border-radius:14px;
-margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,.35);
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:6px;
+background:#111827;
+color:#fff;
+padding:10px;
+font-size:15px;
+font-weight:bold;
+border-radius:10px;
+margin-bottom:8px;
+box-shadow:0 4px 12px rgba(0,0,0,.35);
 }
 
 #status{
-font-size:12px;
-padding:4px 10px;
+font-size:11px;
+padding:3px 8px;
 border-radius:999px;
 background:#1f2937;
 color:#93c5fd;
 }
 
+/* TABS */
 .tabs{
-display:flex;gap:6px;overflow-x:auto;
-padding-bottom:4px;margin-bottom:10px;
+display:flex;
+gap:5px;
+overflow-x:auto;
+margin-bottom:8px;
 scrollbar-width:none;
 }
 .tabs::-webkit-scrollbar{display:none;}
 
 .tab{
-border:none;background:#1e293b;color:#cbd5e1;
-padding:10px 14px;border-radius:10px;
-white-space:nowrap;font-size:13px;
-font-weight:bold;cursor:pointer;
+border:none;
+background:#1e293b;
+color:#cbd5e1;
+padding:7px 10px;
+border-radius:8px;
+white-space:nowrap;
+font-size:11px;
+font-weight:bold;
+cursor:pointer;
+flex-shrink:0;
 }
 
 .tab.active{background:#2563eb;color:#fff;}
 
+/* SEARCH */
 input{
-width:100%;padding:12px;margin-bottom:10px;
-border:1px solid #334155;border-radius:10px;
-font-size:15px;background:#111827;color:#fff;
+width:100%;
+padding:9px;
+margin-bottom:8px;
+border:1px solid #334155;
+border-radius:8px;
+font-size:13px;
+background:#111827;
+color:#fff;
 }
-input::placeholder{color:#94a3b8;}
 
+/* TABLE AREA */
 #tableArea{
-background:#111827;border-radius:14px;
-overflow:auto;max-height:78vh;
+background:#111827;
+border-radius:10px;
+overflow:auto;
+max-height:75vh;
 box-shadow:0 4px 12px rgba(0,0,0,.35);
 }
 
+/* TABLE */
 table{
 border-collapse:collapse;
-min-width:700px;width:max-content;
+width:100%;
+min-width:700px;
 font-size:12px;
 }
 
 th{
-background:#1d4ed8;color:#fff;padding:8px;
-position:sticky;top:0;white-space:nowrap;z-index:2;
+background:#1d4ed8;
+color:#fff;
+padding:8px;
+position:sticky;
+top:0;
+z-index:2;
+white-space:nowrap;
 }
 
 td{
-padding:8px;border-bottom:1px solid #1e293b;
-text-align:center;min-width:90px;max-width:140px;
-word-break:break-word;color:#e5e7eb;
+padding:7px;
+border-bottom:1px solid #1e293b;
+text-align:center;
+min-width:80px;
+word-break:break-word;
+color:#e5e7eb;
 }
 
-tr:nth-child(even){background:#0f172a;}
-tr:nth-child(odd){background:#111827;}
-
+/* ROW COLORS */
 .low{
 background:#7f1d1d !important;
 color:#fecaca !important;
@@ -86,22 +130,75 @@ color:#bbf7d0 !important;
 font-weight:bold;
 }
 
+/* LOADING */
 .loading{
-text-align:center;padding:25px;
-font-size:16px;color:#94a3b8;
+text-align:center;
+padding:20px;
+color:#94a3b8;
 }
 
+/* SYNC */
 #sync{
 font-size:11px;
 color:#94a3b8;
 margin-bottom:6px;
 }
 
-@media(max-width:480px){
-table{min-width:620px;font-size:11px;}
-td,th{padding:6px;min-width:80px;}
-.tab{font-size:12px;padding:9px 12px;}
-header{font-size:16px;}
+/* =========================
+   MOBILE FIX (IMPORTANT)
+========================= */
+@media(max-width:600px){
+
+body{padding:4px;}
+
+header{
+font-size:13px;
+padding:8px;
+}
+
+.tab{
+font-size:10px;
+padding:6px 8px;
+}
+
+input{
+font-size:12px;
+padding:8px;
+}
+
+/* KEY FIX FOR SMALL DEVICES */
+table{
+min-width:100%;   /* IMPORTANT CHANGE */
+font-size:11px;
+}
+
+td,th{
+padding:5px;
+min-width:60px;
+}
+
+#tableArea{
+max-height:72vh;
+border-radius:8px;
+}
+}
+
+/* VERY SMALL DEVICES */
+@media(max-width:400px){
+
+header{
+flex-direction:column;
+align-items:flex-start;
+}
+
+table{
+font-size:10px;
+}
+
+td,th{
+padding:4px;
+min-width:55px;
+}
 }
 </style>
 </head>
@@ -162,7 +259,7 @@ document.getElementById("sync").innerText="Last Sync: "+d.toLocaleTimeString();
 function makeTabs(){
 let html="";
 sheets.forEach(name=>{
-html+=`<button class=\"tab ${name===currentSheet?'active':''}\" onclick=\"changeTab('${name}')\">${name}</button>`;
+html+=`<button class="tab ${name===currentSheet?'active':''}" onclick="changeTab('${name}')">${name}</button>`;
 });
 document.getElementById("tabs").innerHTML=html;
 }
@@ -193,8 +290,8 @@ let search=document.getElementById("search").value.toLowerCase();
 let rows=allData[currentSheet];
 
 if(!rows || rows.length===0){
- document.getElementById("tableArea").innerHTML="No Data";
- return;
+document.getElementById("tableArea").innerHTML="No Data";
+return;
 }
 
 let html="<table><tr>";
