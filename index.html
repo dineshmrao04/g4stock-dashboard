@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>G4 Stock Dashboard</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+
+body{background:#0f172a;color:#e5e7eb;padding:8px;}
+
+header{
+background:#111827;color:#fff;padding:14px;text-align:center;
+font-size:18px;font-weight:bold;border-radius:14px;
+margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+
+.tabs{
+display:flex;gap:6px;overflow-x:auto;
+padding-bottom:4px;margin-bottom:10px;
+scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none;}
+
+.tab{
+border:none;background:#1e293b;color:#cbd5e1;
+padding:10px 14px;border-radius:10px;
+white-space:nowrap;font-size:13px;
+font-weight:bold;cursor:pointer;
+}
+
+.tab.active{background:#2563eb;color:#fff;}
+
+input{
+width:100%;padding:12px;margin-bottom:10px;
+border:1px solid #334155;border-radius:10px;
+font-size:15px;background:#111827;color:#fff;
+}
+input::placeholder{color:#94a3b8;}
+
+#tableArea{
+background:#111827;border-radius:14px;
+overflow:auto;max-height:78vh;
+box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+
+table{
+border-collapse:collapse;
+min-width:700px;width:max-content;
+font-size:12px;
+}
+
+th{
+background:#1d4ed8;color:#fff;padding:8px;
+position:sticky;top:0;white-space:nowrap;z-index:2;
+}
+
+td{
+padding:8px;border-bottom:1px solid #1e293b;
+text-align:center;min-width:90px;max-width:140px;
+word-break:break-word;color:#e5e7eb;
+}
+
+tr:nth-child(even){background:#0f172a;}
+tr:nth-child(odd){background:#111827;}
+
+.low{
+background:#7f1d1d !important;
+color:#fecaca !important;
+font-weight:bold;
+}
+
+.good{
+background:#14532d !important;
+color:#bbf7d0 !important;
+font-weight:bold;
+}
+
+.loading{
+text-align:center;padding:25px;
+font-size:16px;color:#94a3b8;
+}
+
+@media(max-width:480px){
+table{min-width:620px;font-size:11px;}
+td,th{padding:6px;min-width:80px;}
+.tab{font-size:12px;padding:9px 12px;}
+header{font-size:16px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>📦 G4 Live Stock Dashboard</header>
+
+<div class="tabs" id="tabs"></div>
+
+<input type="text" id="search" placeholder="🔍 Search Product...">
+
+<div id="tableArea" class="loading">Loading Data...</div>
+
+<script>
+const API="https://script.google.com/macros/s/AKfycbybi8bwUe_ALjsV0mIrjYQ1HPYG7_xrKd2kZ1ZykCmbxttmCTCP1KVYx9rO8AsoBlVE/exec";
+
+const sheets=[
+"SEARCH SHEET",
+"DATA SHEET",
+"PO SHEET",
+"PRODUCTION PREFERENCE SHEET",
+"PO NOT AVAILABLE",
+"PO AVAILABLE",
+"PO DISPATCHED",
+"DAILY - REPORT"
+];
+
+let currentSheet="SEARCH SHEET";
+let allData={};
+
+/* SETTINGS */
+const stockRules={
+"SEARCH SHEET":{cols:[2,5,7],limit:5},
+"DATA SHEET":{cols:[8],limit:5},
+"PO SHEET":{cols:[5,6],limit:5},
+
+"PRODUCTION PREFERENCE SHEET":{
+cols:[4],
+limit:5,
+rowGreenIfNumber:true,
+checkCol:4,
+greenCols:[1,2,3,4,5,6,7,8,9,10,11,12]
+},
+
+"PO NOT AVAILABLE":{cols:[5],limit:5},
+"PO AVAILABLE":{cols:[5],limit:5},
+"PO DISPATCHED":{cols:[5],limit:5},
+"DAILY - REPORT":{cols:[5],limit:5}
+};
+
+function makeTabs(){
+let html="";
+sheets.forEach(name=>{
+html+=`<button class="tab ${name===currentSheet?'active':''}" onclick="changeTab('${name}')">${name}</button>`;
+});
+document.getElementById("tabs").innerHTML=html;
+}
+
+function changeTab(name){
+currentSheet=name;
+makeTabs();
+showTable();
+}
+
+async function loadData(){
+try{
+let res=await fetch(API);
+allData=await res.json();
+makeTabs();
+showTable();
+}catch(e){
+document.getElementById("tableArea").innerHTML="Error Loading Data";
+}
+}
+
+function showTable(){
+
+let search=document.getElementById("search").value.toLowerCase();
+let rows=allData[currentSheet];
+
+if(!rows || rows.length===0){
+document.getElementById("tableArea").innerHTML="No Data";
+return;
+}
+
+let html="<table><tr>";
+
+rows[0].forEach(h=>html+="<th>"+h+"</th>");
+html+="</tr>";
+
+for(let i=1;i<rows.length;i++){
+
+let row=rows[i];
+let txt=row.join(" ").toLowerCase();
+
+if(search && !txt.includes(search)) continue;
+
+html+="<tr>";
+
+row.forEach((cell,index)=>{
+
+let cls="";
+let num=parseFloat(cell);
+let rule=stockRules[currentSheet];
+
+if(rule){
+
+/* Production row green */
+if(rule.rowGreenIfNumber){
+let checkNum=parseFloat(row[rule.checkCol]);
+if(!isNaN(checkNum) && rule.greenCols.includes(index)){
+cls="good";
+}
+}
+
+/* Normal low stock */
+if(rule.cols.includes(index) && !isNaN(num)){
+if(num<=rule.limit) cls="low";
+if(num>rule.limit) cls="good";
+}
+
+}
+
+html+=`<td class="${cls}">${cell}</td>`;
+
+});
+
+html+="</tr>";
+}
+
+html+="</table>";
+
+document.getElementById("tableArea").innerHTML=html;
+}
+
+document.getElementById("search").onkeyup=showTable;
+
+loadData();
+setInterval(loadData,30000);
+</script>
+
+</body>
+</html>
