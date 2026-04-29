@@ -11,9 +11,18 @@
 body{background:#0f172a;color:#e5e7eb;padding:8px;}
 
 header{
-background:#111827;color:#fff;padding:14px;text-align:center;
+display:flex;justify-content:space-between;align-items:center;
+background:#111827;color:#fff;padding:14px;
 font-size:18px;font-weight:bold;border-radius:14px;
 margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+
+#status{
+font-size:12px;
+padding:4px 10px;
+border-radius:999px;
+background:#1f2937;
+color:#93c5fd;
 }
 
 .tabs{
@@ -82,6 +91,12 @@ text-align:center;padding:25px;
 font-size:16px;color:#94a3b8;
 }
 
+#sync{
+font-size:11px;
+color:#94a3b8;
+margin-bottom:6px;
+}
+
 @media(max-width:480px){
 table{min-width:620px;font-size:11px;}
 td,th{padding:6px;min-width:80px;}
@@ -93,7 +108,12 @@ header{font-size:16px;}
 
 <body>
 
-<header>📦 G4 Live Stock Dashboard</header>
+<header>
+<div>📦 G4 Live Stock Dashboard</div>
+<div id="status">● Live</div>
+</header>
+
+<div id="sync">Last Sync: --</div>
 
 <div class="tabs" id="tabs"></div>
 
@@ -118,17 +138,13 @@ const sheets=[
 let currentSheet="SEARCH SHEET";
 let allData={};
 
-/* SETTINGS */
 const stockRules={
 "SEARCH SHEET":{cols:[2,3],limit:5},
 "DATA SHEET":{cols:[8],limit:5},
 "PO SHEET":{cols:[5,6],limit:5},
 
 "PRODUCTION PREFERENCE SHEET":{
-cols:[4],
-limit:5,
-rowGreenIfNumber:true,
-checkCol:4,
+cols:[4],limit:5,rowGreenIfNumber:true,checkCol:4,
 greenCols:[1,2,3,4,5,6,7,8,9,10,11,12]
 },
 
@@ -138,10 +154,15 @@ greenCols:[1,2,3,4,5,6,7,8,9,10,11,12]
 "DAILY - REPORT":{cols:[5],limit:5}
 };
 
+function updateSync(){
+let d=new Date();
+document.getElementById("sync").innerText="Last Sync: "+d.toLocaleTimeString();
+}
+
 function makeTabs(){
 let html="";
 sheets.forEach(name=>{
-html+=`<button class="tab ${name===currentSheet?'active':''}" onclick="changeTab('${name}')">${name}</button>`;
+html+=`<button class=\"tab ${name===currentSheet?'active':''}\" onclick=\"changeTab('${name}')\">${name}</button>`;
 });
 document.getElementById("tabs").innerHTML=html;
 }
@@ -158,8 +179,11 @@ let res=await fetch(API);
 allData=await res.json();
 makeTabs();
 showTable();
+document.getElementById("status").innerText="● Live";
+updateSync();
 }catch(e){
 document.getElementById("tableArea").innerHTML="Error Loading Data";
+document.getElementById("status").innerText="● Offline";
 }
 }
 
@@ -169,33 +193,27 @@ let search=document.getElementById("search").value.toLowerCase();
 let rows=allData[currentSheet];
 
 if(!rows || rows.length===0){
-document.getElementById("tableArea").innerHTML="No Data";
-return;
+ document.getElementById("tableArea").innerHTML="No Data";
+ return;
 }
 
 let html="<table><tr>";
-
 rows[0].forEach(h=>html+="<th>"+h+"</th>");
 html+="</tr>";
 
 for(let i=1;i<rows.length;i++){
-
 let row=rows[i];
 let txt=row.join(" ").toLowerCase();
-
 if(search && !txt.includes(search)) continue;
 
 html+="<tr>";
 
 row.forEach((cell,index)=>{
-
 let cls="";
 let num=parseFloat(cell);
 let rule=stockRules[currentSheet];
 
 if(rule){
-
-/* Production row green */
 if(rule.rowGreenIfNumber){
 let checkNum=parseFloat(row[rule.checkCol]);
 if(!isNaN(checkNum) && rule.greenCols.includes(index)){
@@ -203,16 +221,13 @@ cls="good";
 }
 }
 
-/* Normal low stock */
 if(rule.cols.includes(index) && !isNaN(num)){
 if(num<=rule.limit) cls="low";
 if(num>rule.limit) cls="good";
 }
-
 }
 
 html+=`<td class="${cls}">${cell}</td>`;
-
 });
 
 html+="</tr>";
