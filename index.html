@@ -6,216 +6,37 @@
 <title>G4 Stock Dashboard</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#0f172a;
-color:#e5e7eb;
-padding:6px;
-}
-
-/* HEADER */
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-gap:6px;
-background:#111827;
-color:#fff;
-padding:10px;
-font-size:15px;
-font-weight:bold;
-border-radius:10px;
-margin-bottom:8px;
-box-shadow:0 4px 12px rgba(0,0,0,.35);
-}
-
-#status{
-font-size:11px;
-padding:3px 8px;
-border-radius:999px;
-background:#1f2937;
-color:#93c5fd;
-}
-
-/* TABS */
-.tabs{
-display:flex;
-gap:5px;
-overflow-x:auto;
-margin-bottom:8px;
-scrollbar-width:none;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#0f172a;color:#e5e7eb;padding:6px;}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;background:#111827;color:#fff;padding:10px;font-size:15px;font-weight:bold;border-radius:10px;margin-bottom:8px;box-shadow:0 4px 12px rgba(0,0,0,.35);} 
+#status{font-size:11px;padding:3px 8px;border-radius:999px;background:#1f2937;color:#93c5fd;}
+.tabs{display:flex;gap:5px;overflow-x:auto;margin-bottom:8px;scrollbar-width:none;} 
 .tabs::-webkit-scrollbar{display:none;}
-
-.tab{
-border:none;
-background:#1e293b;
-color:#cbd5e1;
-padding:7px 10px;
-border-radius:8px;
-white-space:nowrap;
-font-size:11px;
-font-weight:bold;
-cursor:pointer;
-flex-shrink:0;
-}
-
+.tab{border:none;background:#1e293b;color:#cbd5e1;padding:7px 10px;border-radius:8px;white-space:nowrap;font-size:11px;font-weight:bold;cursor:pointer;flex-shrink:0;}
 .tab.active{background:#2563eb;color:#fff;}
-
-/* SEARCH */
-input{
-width:100%;
-padding:9px;
-margin-bottom:8px;
-border:1px solid #334155;
-border-radius:8px;
-font-size:13px;
-background:#111827;
-color:#fff;
-}
-
-/* TABLE AREA */
-#tableArea{
-background:#111827;
-border-radius:10px;
-overflow:auto;
-max-height:75vh;
-box-shadow:0 4px 12px rgba(0,0,0,.35);
-}
-
-/* TABLE */
-table{
-border-collapse:collapse;
-width:100%;
-min-width:700px;
-font-size:12px;
-}
-
-th{
-background:#1d4ed8;
-color:#fff;
-padding:8px;
-position:sticky;
-top:0;
-z-index:2;
-white-space:nowrap;
-}
-
-td{
-padding:7px;
-border-bottom:1px solid #1e293b;
-text-align:center;
-min-width:80px;
-word-break:break-word;
-color:#e5e7eb;
-}
-
-/* ROW COLORS */
-.low{
-background:#7f1d1d !important;
-color:#fecaca !important;
-font-weight:bold;
-}
-
-.good{
-background:#14532d !important;
-color:#bbf7d0 !important;
-font-weight:bold;
-}
-
-/* LOADING */
-.loading{
-text-align:center;
-padding:20px;
-color:#94a3b8;
-}
-
-/* SYNC */
-#sync{
-font-size:11px;
-color:#94a3b8;
-margin-bottom:6px;
-}
-
-/* =========================
-   MOBILE FIX (IMPORTANT)
-========================= */
-@media(max-width:600px){
-
-body{padding:4px;}
-
-header{
-font-size:13px;
-padding:8px;
-}
-
-.tab{
-font-size:10px;
-padding:6px 8px;
-}
-
-input{
-font-size:12px;
-padding:8px;
-}
-
-/* KEY FIX FOR SMALL DEVICES */
-table{
-min-width:100%;   /* IMPORTANT CHANGE */
-font-size:11px;
-}
-
-td,th{
-padding:5px;
-min-width:60px;
-}
-
-#tableArea{
-max-height:72vh;
-border-radius:8px;
-}
-}
-
-/* VERY SMALL DEVICES */
-@media(max-width:400px){
-
-header{
-flex-direction:column;
-align-items:flex-start;
-}
-
-table{
-font-size:10px;
-}
-
-td,th{
-padding:4px;
-min-width:55px;
-}
-}
+input{width:100%;padding:9px;margin-bottom:8px;border:1px solid #334155;border-radius:8px;font-size:13px;background:#111827;color:#fff;}
+#tableArea{background:#111827;border-radius:10px;overflow:auto;max-height:75vh;box-shadow:0 4px 12px rgba(0,0,0,.35);} 
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:12px;} 
+th{background:#1d4ed8;color:#fff;padding:8px;position:sticky;top:0;z-index:2;white-space:nowrap;} 
+td{padding:7px;border-bottom:1px solid #1e293b;text-align:center;min-width:80px;word-break:break-word;color:#e5e7eb;} 
+.low{background:#7f1d1d !important;color:#fecaca !important;font-weight:bold;} 
+.good{background:#14532d !important;color:#bbf7d0 !important;font-weight:bold;} 
+.loading{text-align:center;padding:20px;color:#94a3b8;} 
+#sync{font-size:11px;color:#94a3b8;margin-bottom:6px;} 
+@media(max-width:600px){body{padding:4px;}header{font-size:13px;padding:8px;} .tab{font-size:10px;padding:6px 8px;} input{font-size:12px;padding:8px;} table{min-width:100%;font-size:11px;} td,th{padding:5px;min-width:60px;} #tableArea{max-height:72vh;border-radius:8px;}}
+@media(max-width:400px){header{flex-direction:column;align-items:flex-start;} table{font-size:10px;} td,th{padding:4px;min-width:55px;}}
 </style>
 </head>
 
 <body>
-
 <header>
 <div>📦 G4 Live Stock Dashboard</div>
 <div id="status">● Live</div>
 </header>
 
 <div id="sync">Last Sync: --</div>
-
 <div class="tabs" id="tabs"></div>
-
 <input type="text" id="search" placeholder="🔍 Search Product...">
-
 <div id="tableArea" class="loading">Loading Data...</div>
 
 <script>
@@ -223,13 +44,13 @@ const API="https://script.google.com/macros/s/AKfycbybi8bwUe_ALjsV0mIrjYQ1HPYG7_
 
 const sheets=[
 "SEARCH SHEET",
-"DATA SHEET",
-"PO SHEET",
 "PRODUCTION PREFERENCE SHEET",
+"DAILY - REPORT",
+"PO SHEET",
 "PO NOT AVAILABLE",
 "PO AVAILABLE",
 "PO DISPATCHED",
-"DAILY - REPORT"
+"DATA SHEET"
 ];
 
 let currentSheet="SEARCH SHEET";
@@ -239,12 +60,10 @@ const stockRules={
 "SEARCH SHEET":{cols:[2,3],limit:5},
 "DATA SHEET":{cols:[8],limit:5},
 "PO SHEET":{cols:[5,6],limit:5},
-
 "PRODUCTION PREFERENCE SHEET":{
 cols:[4],limit:5,rowGreenIfNumber:true,checkCol:4,
 greenCols:[1,2,3,4,5,6,7,8,9,10,11,12]
 },
-
 "PO NOT AVAILABLE":{cols:[5],limit:5},
 "PO AVAILABLE":{cols:[5],limit:5},
 "PO DISPATCHED":{cols:[5],limit:5},
@@ -268,6 +87,7 @@ function changeTab(name){
 currentSheet=name;
 makeTabs();
 showTable();
+document.getElementById("tableArea").scrollTop=0;
 }
 
 async function loadData(){
@@ -285,7 +105,6 @@ document.getElementById("status").innerText="● Offline";
 }
 
 function showTable(){
-
 let search=document.getElementById("search").value.toLowerCase();
 let rows=allData[currentSheet];
 
@@ -311,17 +130,26 @@ let num=parseFloat(cell);
 let rule=stockRules[currentSheet];
 
 if(rule){
+
+// ✅ FIXED BLOCK (NO ERRORS)
 if(rule.rowGreenIfNumber){
-let checkNum=parseFloat(row[rule.checkCol]);
-if(!isNaN(checkNum) && rule.greenCols.includes(index)){
+let checkValue=row[rule.checkCol];
+let checkText=String(checkValue).trim().toUpperCase();
+let checkNum=parseFloat(checkValue);
+
+if(checkText!=="" && checkText!=="PENDING"){
+if(rule.greenCols.includes(index)){
 cls="good";
 }
 }
-
-if(rule.cols.includes(index) && !isNaN(num)){
-if(num<=rule.limit) cls="low";
-if(num>rule.limit) cls="good";
 }
+
+// ✅ stock coloring safe
+if(rule.cols && rule.cols.includes(index) && !isNaN(num)){
+if(num<=rule.limit) cls="low";
+else cls="good";
+}
+
 }
 
 html+=`<td class="${cls}">${cell}</td>`;
@@ -333,9 +161,15 @@ html+="</tr>";
 html+="</table>";
 
 document.getElementById("tableArea").innerHTML=html;
+document.getElementById("tableArea").scrollTop=0;
 }
 
-document.getElementById("search").onkeyup=showTable;
+// search fix
+
+document.getElementById("search").onkeyup=()=>{
+showTable();
+document.getElementById("tableArea").scrollTop=0;
+};
 
 loadData();
 setInterval(loadData,30000);
